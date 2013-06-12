@@ -1155,6 +1155,10 @@ static long handle_pkt_read_buffer_ioc(struct file *filp, unsigned int cmd,
 	RpcClientInfo_t *cInfo;
 	UInt8 *buffer;
 
+	if (param == 0) {
+		_DBG(RPC_TRACE("k:%s param is invalid address\n", __func__));
+		return -EFAULT;
+	}
 	if (copy_from_user
 	    (&ioc_param, (rpc_pkt_user_buf_t *) param,
 	     sizeof(rpc_pkt_user_buf_t)) != 0) {
@@ -1180,8 +1184,13 @@ static long handle_pkt_read_buffer_ioc(struct file *filp, unsigned int cmd,
 	buffer = RPC_PACKET_GetBufferData(ioc_param.dataBufHandle);
 
 	HISTORY_RPC_LOG_PKT("GetBufPtr", ioc_param.clientId,
-			    (int)ioc_param.dataBufHandle);
-
+					(int)ioc_param.dataBufHandle);
+	if (ioc_param.userBufLen == 0) {
+				_DBG(RPC_TRACE
+				("k:%s - invalid userBufLen = %d\n",
+				__func__, ioc_param.userBufLen));
+				return -EFAULT;
+	}
 	//Coverity [TAINTED_SCALAR]
 	if (copy_to_user(ioc_param.userBuf, buffer, ioc_param.userBufLen) != 0) {
 		_DBG(RPC_TRACE
@@ -1289,6 +1298,10 @@ static long handle_pkt_alloc_buffer_ioc(struct file *filp, unsigned int cmd,
 {
 	rpc_pkt_alloc_buf_t ioc_param = { 0 };
 
+	if (param == 0) {
+		_DBG(RPC_TRACE("k:%s param is invalid address\n", __func__));
+		return -EFAULT;
+	}
 	if (copy_from_user
 	    (&ioc_param, (rpc_pkt_alloc_buf_t *) param,
 	     sizeof(rpc_pkt_alloc_buf_t)) != 0) {
@@ -1297,6 +1310,12 @@ static long handle_pkt_alloc_buffer_ioc(struct file *filp, unsigned int cmd,
 		return -EFAULT;
 	}
 
+	if (ioc_param.interfaceType >= INTERFACE_TOTAL ||
+				ioc_param.interfaceType < INTERFACE_START) {
+			_DBG(RPC_TRACE("k:%s invalid interfaceType=%d\n"
+				, __func__, ioc_param.interfaceType));
+			return -EINVAL;
+	}
 	RPC_READ_UNLOCK;
 	//Coverity [TAINTED_SCALAR]
 	ioc_param.pktBufHandle =
@@ -1410,11 +1429,21 @@ static long handle_pkt_free_buffer_ioc(struct file *filp, unsigned int cmd,
 	int ret = -1;
 	rpc_pkt_free_buf_t ioc_param = { 0 };
 
+	if (param == 0) {
+		_DBG(RPC_TRACE("k:%s param is invalid address\n", __func__));
+		return -EFAULT;
+	}
 	if (copy_from_user
 	    (&ioc_param, (rpc_pkt_free_buf_t *) param,
 	     sizeof(rpc_pkt_free_buf_t)) != 0) {
 		_DBG(RPC_TRACE
 		     ("k:handle_pkt_free_buffer_ioc - copy_from_user() had error\n"));
+		return -EFAULT;
+	}
+
+	if (ioc_param.dataBufHandle == NULL) {
+		_DBG(RPC_TRACE("k:%s dataBufHandle is invalid pinter\n",
+		__func__));
 		return -EFAULT;
 	}
 	//Coverity [TAINTED_SCALAR]
@@ -1911,6 +1940,10 @@ static long handle_pkt_alloc_buffer_ptr_ioc(struct file *filp, unsigned int cmd,
 {
 	rpc_pkt_alloc_buf_ptr_t ioc_param = { 0 };
 
+	if (param == 0) {
+		_DBG(RPC_TRACE("k:%s param is invalid address\n", __func__));
+		return -EFAULT;
+	}
 	/* coverity[ -tainted_data_argument : arg-0 ] */
 	if (copy_from_user
 	    (&ioc_param, (rpc_pkt_alloc_buf_ptr_t *) param,
@@ -1920,6 +1953,12 @@ static long handle_pkt_alloc_buffer_ptr_ioc(struct file *filp, unsigned int cmd,
 		return -EFAULT;
 	}
 
+	if (ioc_param.interfaceType >= INTERFACE_TOTAL ||
+				ioc_param.interfaceType < INTERFACE_START) {
+		_DBG(RPC_TRACE("k:%s invalid interfaceType=%d\n"
+				, __func__, ioc_param.interfaceType));
+		return -EINVAL;
+	}
 	RPC_READ_UNLOCK;
 	ioc_param.pktBufHandle =
 	    RPC_PACKET_AllocateBufferEx(ioc_param.interfaceType,
@@ -2083,7 +2122,10 @@ static long handle_pkt_ack_cp_reset_ioc(struct file *filp, unsigned int cmd,
 {
 	rpc_pkt_cp_reset_ack_t ioc_param;
 
-	/* Coverity [TAINTED_SCALAR]   */
+	if (param == 0) {
+		_DBG(RPC_TRACE("k:%s param is invalid address\n", __func__));
+		return -EFAULT;
+	}
 	if (copy_from_user
 	    (&ioc_param, (int *)param, sizeof(rpc_pkt_cp_reset_ack_t)) != 0) {
 		_DBG(RPC_TRACE
@@ -2097,7 +2139,12 @@ static long handle_pkt_ack_cp_reset_ioc(struct file *filp, unsigned int cmd,
 	if (INTERFACE_CAPI2 != ioc_param.interfaceType) {
 		_DBG(RPC_TRACE("handle_pkt_ack_cp_reset_ioc: ack ifce %d\n",
 			       ioc_param.interfaceType));
-		/* Coverity [TAINTED_SCALAR]   */
+		if (ioc_param.interfaceType >= INTERFACE_TOTAL ||
+				ioc_param.interfaceType < INTERFACE_START) {
+			_DBG(RPC_TRACE("k:%s invalid interfaceType=%d\n"
+					, __func__, ioc_param.interfaceType));
+			return -EINVAL;
+		}
 		RPC_PACKET_FilterAckReadyForCPReset(ioc_param.rpcClientID,
 						    ioc_param.interfaceType);
 	} else {
