@@ -2260,6 +2260,8 @@ UInt16 SIMLockGetLockCodeInform(SEC_SimLock_LockType_t lockType,
 					     simlockFile->maxUnlockAttempt -
 					     (*unlock_attempt) : 0);
 				} else {
+					/* Actually we should keep the check */
+					/* coverity[DEADCODE] */
 					remain_attempt =
 					    simlockFile->maxUnlockAttempt;
 				}
@@ -2324,6 +2326,7 @@ UInt16 SIMLockGetLockCodeInform(SEC_SimLock_LockType_t lockType,
 					     simlockFile->maxUnlockAttempt -
 					     (*unlock_attempt) : 0);
 				} else {
+					/* coverity[DEADCODE] */
 					remain_attempt =
 					    simlockFile->maxUnlockAttempt;
 				}
@@ -2394,6 +2397,7 @@ UInt16 SIMLockGetLockCodeInform(SEC_SimLock_LockType_t lockType,
 					     simlockFile->maxUnlockAttempt -
 					     (*unlock_attempt) : 0);
 				} else {
+					/* coverity[DEADCODE] */
 					remain_attempt =
 					    simlockFile->maxUnlockAttempt;
 				}
@@ -2459,6 +2463,7 @@ UInt16 SIMLockGetLockCodeInform(SEC_SimLock_LockType_t lockType,
 					     simlockFile->maxUnlockAttempt -
 					     (*unlock_attempt) : 0);
 				} else {
+					/* coverity[DEADCODE] */
 					remain_attempt =
 					    simlockFile->maxUnlockAttempt;
 				}
