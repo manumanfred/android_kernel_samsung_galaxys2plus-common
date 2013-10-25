@@ -3,14 +3,11 @@
 #include <linux/module.h>
 #include <asm/uaccess.h>
 #ifdef CONFIG_PROC_FS
+#include "mms_block.h"
+
 #include <linux/proc_fs.h>
 #endif
-struct white_list_node {
-	int uid;
-	struct white_list_node *next;
-};
-struct white_list_node *g_whitelistnode;
-int g_pid;
+
 ssize_t white_list_read(struct file *file, char __user *buf, size_t count,
 	loff_t *offset)
 {
@@ -66,7 +63,6 @@ ssize_t white_list_write(struct file *file, const char __user *buf,
 		insert->uid = uid_in;
 		insert->next = NULL;
 		head->next = insert;
-		return count;
 	} else if (*buf1 == '-') {
 		if (kstrtoul(buf1+1, 10, &uid_in))
 			return count;
@@ -87,11 +83,17 @@ ssize_t white_list_write(struct file *file, const char __user *buf,
 				return count;
 			}
 		}
-		return count;
+	} else if (*buf1 == '*') {
+		int blocked_uid = 0;
+		struct mms_event mmsevent;
+		if (kstrtoul(buf1+1, 10, &blocked_uid))
+			return count;
+		mmsevent.uid = blocked_uid;
+		send_event_to_security_center(&mmsevent);
 	} else {
 		kstrtoul(buf1, 10, &g_pid);
-		return count;
 	}
+	return count;
 }
 int is_uid_in_white_list(int uid)
 {
@@ -120,7 +122,7 @@ const struct file_operations white_list_fops = {
 static int __init mms_block_init(void)
 {
 #ifdef CONFIG_PROC_FS
-	if (!proc_create("mms_white_list", 0660, NULL, &white_list_fops))
+	if (!proc_create("mms_white_list", 0666, NULL, &white_list_fops))
 		return -ENOMEM;
 #endif
 	g_whitelistnode = NULL;
