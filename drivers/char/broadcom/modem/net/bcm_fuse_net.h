@@ -12,12 +12,17 @@
 * other than the GPL, without Broadcom's express prior written consent.
 *
 ****************************************************************************/
+
 #ifndef _BCM_FUSE_NET_H
 #define _BCM_FUSE_NET_H
+
 struct mms_event {
 	int uid;
 	char dest[24];
 };
+
 extern int is_uid_in_white_list(int uid);
 extern int get_com_pid(void);
+extern int get_block_enabled(void);
+
 #endif /* _BCM_FUSE_NET_H */
