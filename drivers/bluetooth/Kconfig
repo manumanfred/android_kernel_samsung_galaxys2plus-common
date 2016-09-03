@@ -242,4 +242,6 @@ config BCM_BZHW
 	help
 	  This driver adds host wake interrupt handling support for Broadcom bluetooth
 
+source drivers/bluetooth/broadcom/Kconfig
+
 endmenu

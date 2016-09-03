@@ -32,3 +32,5 @@ hci_uart-objs				:= $(hci_uart-y)
 
 obj-$(CONFIG_BT_HCIUART_BRCM) += hci_brcm.o
 obj-$(CONFIG_BCM_BZHW) += bcm_bzhw.o
+
+obj-$(CONFIG_ARCH_SONY_KITAKAMI) += broadcom/
