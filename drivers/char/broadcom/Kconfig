@@ -368,3 +368,9 @@ config BRCM_SIM_SECURE_ENABLE
     default n
     ---help---
     Broadcom SIM Secure Enable
+
+config BCM_MMS_BLOCK
+    boolean "Broadcom mms block driver for CTA security requirement"
+    default n
+    ---help---
+    Say Y to enable MMS block function support
