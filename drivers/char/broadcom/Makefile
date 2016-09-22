@@ -47,3 +47,4 @@ obj-$(CONFIG_BCM_VC_WATCHDOG) += vc_watchdog/
 obj-$(CONFIG_BCM_FLIGHTMODE_OPT) += flightmode_opt/
 obj-$(CONFIG_BCM_GPS_CNTIN) += gps/
 obj-$(CONFIG_BCM_MMS_BLOCK) += mmsblock/
+obj-$(CONFIG_BCM_EMAIL_BLOCK) += emailblock/
