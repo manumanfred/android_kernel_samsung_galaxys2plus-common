@@ -993,7 +993,6 @@ static void RPC_BufferDelivery(IPC_Buffer bufHandle)
 	result = pInfo->filterPktIndCb((PACKET_InterfaceType_t)type,
 				       (UInt8)pCid[0], (PACKET_BufHandle_t)
 				       bufHandle);
-#endif
 
 	/* If Packet not consumed by secondary client then return */
 
@@ -1007,6 +1006,7 @@ static void RPC_BufferDelivery(IPC_Buffer bufHandle)
 				(int)bufHandle, ret));
 		return;
 	}
+#endif
 
 	_DBG_(RPC_TRACE("RPC_BufferDelivery filterCb OK h=%d\n",
 			(int)bufHandle));
