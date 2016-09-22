@@ -13,18 +13,16 @@
 *
 ****************************************************************************/
 
-#ifndef _EMAIL_BLOCK_H
-#define _EMAIL_BLOCK_H
+#ifndef _BCM_FUSE_NET_H
+#define _BCM_FUSE_NET_H
 
-struct white_list_node {
-	int uid;
-	struct white_list_node *next;
-};
-
-struct netlink_event {
-	int type;
+struct mms_event {
 	int uid;
 	char dest[24];
 };
 
-#endif /* _EMAIL_BLOCK_H */
+extern int is_uid_in_white_list(int uid);
+extern int get_com_pid(void);
+extern int get_block_enabled(void);
+
+#endif /* _BCM_FUSE_NET_H */
