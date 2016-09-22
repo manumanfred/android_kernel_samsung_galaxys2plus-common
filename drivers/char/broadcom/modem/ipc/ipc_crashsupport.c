@@ -639,6 +639,7 @@ void ProcessCPCrashedDump(struct work_struct *work)
 	void __iomem *DumpVAddr;
 	int cpReset = SmLocalControl.SmControl->CrashCode ==
 	    IPC_CP_SILENT_RESET_READY;
+	RpcDbgDumpHistoryLogging(0, 0);
 #ifdef CONFIG_CRASH_DUMP_START_UI_DISPLAY
 const char *crash_trigger = "3";
 #endif
@@ -694,8 +695,6 @@ const char *crash_trigger = "3";
 #endif
 #endif // CONFIG_BCM_AP_PANIC_ON_CPCRASH
 	IPC_Dump();
-
-	RpcDbgDumpHistoryLogging(0, 0);
 
 #if defined(CONFIG_BRCM_CP_CRASH_DUMP) \
 	|| defined(CONFIG_BRCM_CP_CRASH_DUMP_EMMC) \
