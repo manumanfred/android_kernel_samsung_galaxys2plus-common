@@ -442,7 +442,5 @@ config RADIO_WL1273
 
 # TI's ST based wl128x FM radio
 source "drivers/media/radio/wl128x/Kconfig"
-# BCM FM radio
-source "drivers/media/radio/broadcom/Kconfig"
 
 endif # RADIO_ADAPTERS
